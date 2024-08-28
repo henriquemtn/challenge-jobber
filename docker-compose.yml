@@ -1,0 +1,51 @@
+services:
+  # Container do Front-end
+  frontend:
+    container_name: frontend_jobber
+    build:
+      context: ./frontend
+    ports:
+      - 3000:3000
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    tty: true # executa o container continuamente
+    healthcheck:
+      test: ["CMD", "lsof", "-t", "-i:3000"]
+      timeout: 10s
+      retries: 5
+    depends_on:
+      djangoapp:
+        condition: service_healthy
+
+  # Container do Back-end
+  djangoapp:
+    container_name: backend_jobber
+    build:
+      context: ./backend
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend/djangoapp:/djangoapp
+      - ./backend/data/web/static:/data/web/static/
+      - ./backend/data/web/media:/data/web/media/
+    env_file:
+      - ./backend/dotenv_files/.env
+    # Verificar se um container está funcionando corretamente
+    healthcheck:
+      test: ["CMD", "lsof", "-t", "-i:8000"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
+    depends_on:
+      - psql
+
+  # Container do PostgreSQL
+  psql:
+    container_name: psql
+    image: postgres:13-alpine
+    volumes:
+      - ./backend/data/postgres/data:/var/lib/postgresql/data/
+    env_file:
+      - ./backend/dotenv_files/.env
