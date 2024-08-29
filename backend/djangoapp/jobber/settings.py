@@ -16,6 +16,12 @@ ALLOWED_HOSTS = [
     if h.strip()
 ]
 
+# Configurações CORS
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # URL do frontend
+]
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -25,10 +31,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'tasks' # Chamando meu app rest da todolist
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
