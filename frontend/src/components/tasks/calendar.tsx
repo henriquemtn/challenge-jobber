@@ -12,7 +12,7 @@ export function CalendarTasks() {
       mode="single"
       selected={date}
       onSelect={setDate}
-      className="rounded-md border"
+      className="rounded-md border max-w-[320px]"
     />
   )
 }
