@@ -4,3 +4,5 @@
 - Typescript
 - TailwindCSS
 - ShadcnUI ( utiliza components do RadixUI )
+
+Adicionados React-hook-form e Zod
