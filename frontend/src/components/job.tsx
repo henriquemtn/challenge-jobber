@@ -1,9 +1,11 @@
 import { Task } from "@/types/types";
-import { Calendar, CalendarClock, FileImage } from "lucide-react";
+import { Calendar, FileImage } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { Card, CardContent } from "./ui/card";
 import { CarouselItem } from "./ui/carousel";
+import { Badge } from "./ui/badge";
+import { format, differenceInDays } from "date-fns";
 
 export default function Job({
   title,
@@ -12,6 +14,28 @@ export default function Job({
   image,
   due_date
 }: Task) {
+  const today = new Date();
+  const dueDate = due_date ? new Date(due_date) : null;
+  const daysRemaining = dueDate ? differenceInDays(dueDate, today) : null;
+
+  let badgeVariant: "default" | "destructive" | "secondary" | "outline" | null = 'default';
+  let badgeText = '';
+
+  if (daysRemaining !== null) {
+    if (daysRemaining <= 0) {
+      badgeVariant = 'destructive';
+      badgeText = 'Atrasado';
+    } else if (daysRemaining < 3) {
+      badgeVariant = 'destructive';
+      badgeText = `${daysRemaining} dias`;
+    } else {
+      badgeVariant = 'default';
+      badgeText = `${daysRemaining} dias`;
+    }
+  } else {
+    badgeText = 'Sem prazo';
+  }
+
   return (
     <CarouselItem className="pl-1 min-[420px]:basis-1/2 md:basis-1/3 lg:basis-1/5 hover:cursor-pointer">
       <div className="p-0 md:p-1">
@@ -42,17 +66,16 @@ export default function Job({
 
             <div className="flex justify-between items-center">
               <div className="flex gap-1 items-center">
-                <Calendar size={14} />
-                <p className="text-[12px] text-gray-500">
-                  {new Date(created_at).toLocaleDateString()}
+                <Calendar color="#5F33E2" size={14} />
+                <p className="text-[12px] text-[#5F33E2] font-medium">
+                  {format(new Date(created_at), "dd/MM/yyyy")}
                 </p>
               </div>
               {due_date && (
                 <div className="flex gap-1 items-center">
-                  <CalendarClock size={14} />
-                  <p className="text-xs text-gray-500">
-                    {new Date(due_date).toLocaleDateString()}
-                  </p>
+                  <Badge variant={badgeVariant}>
+                    {badgeText}
+                  </Badge>
                 </div>
               )}
             </div>
