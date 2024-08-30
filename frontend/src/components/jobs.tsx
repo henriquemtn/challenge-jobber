@@ -28,7 +28,7 @@ export default function Jobs() {
   }, []);
 
   return (
-    <div className="max-w-[1292px] mx-auto px-4">
+    <div className="max-w-[1292px] mx-auto px-4 mt-6">
       <h1 className="font-bold mb-2">Jobs Destacados 📌</h1>
       <Carousel className="w-full">
         <CarouselContent className="-ml-1">
