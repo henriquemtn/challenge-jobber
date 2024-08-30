@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, PlusCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios from "axios";
@@ -60,7 +60,10 @@ export default function AddTask() {
     // Adiciona os campos ao formData
     formData.append("title", values.title);
     formData.append("description", values.description);
-    formData.append("due_date", values.due_date ? format(values.due_date, "yyyy-MM-dd") : '');
+    formData.append(
+      "due_date",
+      values.due_date ? format(values.due_date, "yyyy-MM-dd") : ""
+    );
 
     // Adiciona o campo owner
     formData.append("owner", "1");
@@ -80,11 +83,15 @@ export default function AddTask() {
 
     try {
       // Envia o formulário para a API
-      const response = await axios.post("http://localhost:8000/api/tasks/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        "http://localhost:8000/api/tasks/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log("Task added successfully", response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -100,7 +107,10 @@ export default function AddTask() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Adicionar um Job</Button>
+        <Button className="gap-1" variant="default">
+          <PlusCircle width={16} height={16}/>
+          Adicionar um Job
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>

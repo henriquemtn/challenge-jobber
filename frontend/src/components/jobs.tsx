@@ -7,11 +7,9 @@ import Job from "./job";
 import {
   Carousel,
   CarouselContent,
-  CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from "./ui/carousel";
-import { Card, CardContent } from "./ui/card";
 
 export default function Jobs() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -30,8 +28,8 @@ export default function Jobs() {
   }, []);
 
   return (
-    <div className="max-w-[1260px] mx-auto px-4">
-      <h1 className="font-bold mb-2">Tarefas Destacadas 📌</h1>
+    <div className="max-w-[1292px] mx-auto px-4">
+      <h1 className="font-bold mb-2">Jobs Destacados 📌</h1>
       <Carousel className="w-full">
         <CarouselContent className="-ml-1">
           {tasks.map((task) => (
