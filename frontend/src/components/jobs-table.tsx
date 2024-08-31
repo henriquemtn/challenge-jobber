@@ -83,7 +83,7 @@ export default function JobsTable() {
                       Lançamento
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                      Prazo de entrega
+                      Prazo
                     </TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>

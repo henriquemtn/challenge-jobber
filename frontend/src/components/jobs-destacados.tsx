@@ -11,7 +11,7 @@ import {
   CarouselPrevious,
 } from "./ui/carousel";
 
-export default function Jobs() {
+export default function JobsDestacados() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {

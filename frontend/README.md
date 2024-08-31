@@ -5,7 +5,9 @@
 - TailwindCSS
 - ShadcnUI ( utiliza components do RadixUI )
 
-Adicionados Axios, React-Hook-Form e Zod para validação de formulários para requisições
+Adicionados Axios, React-Hook-Form e Zod para validação de formulários para requisições.
+
+date-fns permite eu manipular tranquilamente as datas que o backend me devolve no front-end.
 
 [Referencia do uso para Inputs](https://gist.github.com/AndersonNascimentoDosSantos/b3b8f760f3a431fe9e0ee440f5b0e2d4)
 
