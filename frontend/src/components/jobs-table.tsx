@@ -34,6 +34,7 @@ import AddTask from "./tasks/add-task";
 import { Task } from "@/types/types";
 import axios from "axios";
 import { format } from "date-fns";
+import DeleteTask from "./tasks/delete-task";
 
 export default function JobsTable() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -139,7 +140,7 @@ export default function JobsTable() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem>Editar</DropdownMenuItem>
-                            <DropdownMenuItem>Deletar</DropdownMenuItem>
+                            <DeleteTask id={task.id} />
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
