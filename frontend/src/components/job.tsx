@@ -37,8 +37,8 @@ export default function Job({
           )}
           <CardContent className="p-3 flex flex-col h-[150px] justify-between">
             <div className="flex flex-col">
-              <h1 className="font-bold line-clamp-1">{title}</h1>
-              <p className="text-sm text-gray-600 mt-2 line-clamp-2">
+              <h1 className="font-bold break-words min-h-[45px] line-clamp-2">{title}</h1>
+              <p className="text-sm text-gray-600 mt-2 break-words line-clamp-2">
                 {description}
               </p>
             </div>
