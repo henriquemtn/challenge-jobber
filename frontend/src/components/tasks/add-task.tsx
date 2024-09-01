@@ -78,7 +78,9 @@ export default function AddTask() {
         return;
       }
       if (!ACCEPTED_IMAGE_MIME_TYPES.includes(values.image.type)) {
-        alert("Only .jpg, .jpeg, .png, and .webp formats are supported.");
+        toast('Apenas .jpg, .jpeg, .png, and .webp são aceitos.', {
+          icon: '⚠️',
+        });
         return;
       }
       formData.append("image", values.image);
