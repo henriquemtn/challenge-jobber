@@ -46,7 +46,7 @@ export default function JobPage({ params }: any) {
   return (
     <>
       <Header />
-      <div className="max-w-[1292px] mx-auto mt-4 px-4">
+      <div className="max-w-[1292px] mx-auto mt-28 px-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>

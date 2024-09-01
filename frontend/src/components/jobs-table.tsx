@@ -88,7 +88,7 @@ export default function JobsTable() {
                     <TableHead className="hidden md:table-cell">
                       Lançamento
                     </TableHead>
-                    <TableHead className="table-cell">Prazo</TableHead>
+                    <TableHead className="hidden md:table-cell">Prazo</TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>
                     </TableHead>
@@ -134,7 +134,7 @@ export default function JobsTable() {
                           ? format(new Date(task.created_at), "dd/MM/yyyy")
                           : ""}
                       </TableCell>
-                      <TableCell className="table-cell">
+                      <TableCell className="hidden md:table-cell">
                         <DueTime due_date={task.due_date} />
                       </TableCell>
                       <TableCell>

@@ -10,9 +10,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "./ui/carousel";
+import { Button } from "./ui/button";
 
 export default function JobsDestacados() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchTasks() {
@@ -21,6 +23,8 @@ export default function JobsDestacados() {
         setTasks(response.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -28,17 +32,26 @@ export default function JobsDestacados() {
   }, []);
 
   return (
-    <div className="max-w-[1292px] mx-auto px-3 mt-4">
+    <div className="max-w-[1292px] mx-auto px-3 mt-28">
       <h1 className="md:text-[20px] font-bold mb-3">Jobs Destacados 📌</h1>
-      <Carousel className="w-full">
-        <CarouselContent className="-ml-1">
-          {tasks.map((task) => (
-            <Job key={task.id} {...task} />
-          ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+      {loading ? (
+        <p>Carregando...</p>
+      ) : tasks.length > 0 ? (
+        <Carousel className="w-full">
+          <CarouselContent className="-ml-1">
+            {tasks.map((task) => (
+              <Job key={task.id} {...task} />
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
+      ) : (
+        <div className="">
+          <p className="mb-2">Você ainda não destacou nenhum Job, que tal adicionar um.</p>
+          <Button>Destacar Job</Button>
+        </div>
+      )}
     </div>
   );
 }
