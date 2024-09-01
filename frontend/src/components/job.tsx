@@ -39,7 +39,7 @@ export default function Job({
           <CardContent className="p-4 flex-1">
             <h1 className="font-bold">{title}</h1>
             <p className="text-sm text-gray-600 min-h-[60px] mt-2">
-              Descrição: {description}
+              {description}
             </p>
 
             <div className="w-full bg-slate-200 h-[1px] my-2" />
