@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { File, FileImage, ListFilter, MoreHorizontal } from "lucide-react";
+import { Camera, File, FileImage, ListFilter, MoreHorizontal } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -78,8 +78,8 @@ export default function JobsTable() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="hidden w-[100px] sm:table-cell">
-                      <span className="sr-only">Image</span>
+                    <TableHead className="items-center justify-center hidden sm:flex w-[100px]">
+                      <Camera size={16} />
                     </TableHead>
                     <TableHead>Titulo</TableHead>
                     <TableHead className="hidden md:table-cell">
