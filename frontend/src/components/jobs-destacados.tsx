@@ -43,8 +43,6 @@ export default function JobsDestacados() {
               <Job key={task.id} {...task} />
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
         </Carousel>
       ) : (
         <div className="">
