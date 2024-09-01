@@ -14,12 +14,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import toast from 'react-hot-toast';
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface DeleteTask {
     id: number
 }
 
 export default function DeleteTask({id}: DeleteTask) {
+  const router = useRouter();
+
+  const handleNavigate = () => {
+    router.push('/');
+  };
+
   const handleDeleteTask = async () => {
     try {
         const response = await axios.delete(
@@ -27,10 +34,7 @@ export default function DeleteTask({id}: DeleteTask) {
         );
         console.log("Task deleted successfully", response.data);
         toast.success("Tarefa deletada com sucesso!");
-        // Recarregar a pagina
-        setTimeout(() => {
-            window.location.reload();
-          }, 1500);
+        handleNavigate()
 
       } catch (error) {
         toast.error("Houve um erro ao tentar deletar essa tarefa.");
