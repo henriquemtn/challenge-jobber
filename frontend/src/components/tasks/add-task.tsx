@@ -32,8 +32,9 @@ import {
 } from "../ui/dialog";
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
+import toast from "react-hot-toast";
 
-const MAX_FILE_SIZE = 1024 * 1024 * 16;
+const MAX_FILE_SIZE = 1024 * 1024 * 8;
 const ACCEPTED_IMAGE_MIME_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -71,7 +72,9 @@ export default function AddTask() {
     // Se o campo de imagem contiver um arquivo, adicione-o ao formData
     if (values.image instanceof File) {
       if (values.image.size > MAX_FILE_SIZE) {
-        alert("Max image size is 16MB.");
+        toast('Tamanho máximo do arquivo deve ser de 8MB.', {
+          icon: '⚠️',
+        });
         return;
       }
       if (!ACCEPTED_IMAGE_MIME_TYPES.includes(values.image.type)) {
@@ -92,7 +95,12 @@ export default function AddTask() {
           },
         }
       );
-      console.log("Task added successfully", response.data);
+      console.log("Tarefa adicionada com sucesso", response.data);
+      toast.success("Tarefa adicionada com sucesso!");
+      // Recarregar a pagina
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Axios error:", error.response?.data || error.message);
