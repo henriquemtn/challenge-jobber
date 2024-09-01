@@ -1,13 +1,18 @@
+import { Nunito } from 'next/font/google'
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Toaster } from "react-hot-toast";
+import JobModal from '@/components/modals/JobModal';
 
 export const metadata: Metadata = {
   title: "Jobber",
   description: "Todo list",
 };
+
+const font = Nunito({ 
+  subsets: ['latin'], 
+});
+
 
 export default function RootLayout({
   children,
@@ -16,7 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={font.className}>
+        <Toaster />
+        <JobModal />
         {children}
       </body>
     </html>

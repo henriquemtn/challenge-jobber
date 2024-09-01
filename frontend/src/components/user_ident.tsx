@@ -10,9 +10,9 @@ export default function UserIdent() {
 
       <div className="flex flex-col">
         <p className="text-[#13151d] font-medium text-[16px]">
-          Henrique Silveira
+          Olá, Henrique Silveira
         </p>
-        <p className="text-[#13151d] font-medium text-[12px]">Estagiário</p>
+        <p className="text-[#532CC7] text-[14px]">AVANTI - Estagiário</p>
       </div>
     </div>
   );
