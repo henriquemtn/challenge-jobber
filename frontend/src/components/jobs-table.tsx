@@ -9,7 +9,13 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { Camera, File, FileImage, ListFilter, MoreHorizontal } from "lucide-react";
+import {
+  Camera,
+  File,
+  FileImage,
+  ListFilter,
+  MoreHorizontal,
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -35,10 +41,13 @@ import DeleteTask from "./tasks/delete-task";
 import UpdateTask from "./tasks/edit-task";
 import DueTime from "./tasks/due-time";
 import { useRouter } from "next/navigation";
+import useJobModal from "@/hooks/useJobModal";
+import JobModal from "./modals/JobModal";
 
 export default function JobsTable() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const router = useRouter();
+  const jobModal = useJobModal();
 
   const handleNavigate = (id: number) => {
     router.push(`/job/${id}`);
@@ -58,7 +67,7 @@ export default function JobsTable() {
   }, []);
 
   return (
-    <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:p-0 md:gap-8 max-w-[1260px] mx-auto mt-4">
+    <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:p-0 md:gap-8 max-w-[1260px] mx-auto my-4">
       <Tabs defaultValue="all">
         <TabsContent value="all">
           <Card x-chunk="dashboard-06-chunk-0">
@@ -88,7 +97,9 @@ export default function JobsTable() {
                     <TableHead className="hidden md:table-cell">
                       Lançamento
                     </TableHead>
-                    <TableHead className="hidden md:table-cell">Prazo</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Prazo
+                    </TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>
                     </TableHead>
@@ -98,8 +109,8 @@ export default function JobsTable() {
                   {tasks.map((task) => (
                     <TableRow key={task.id}>
                       <TableCell
-                        onClick={() => handleNavigate(task.id)}
                         className="hidden sm:table-cell  cursor-pointer"
+                        onClick={() => jobModal.onOpen(task.id)}
                       >
                         {task.image ? (
                           <Image
@@ -116,27 +127,34 @@ export default function JobsTable() {
                         )}
                       </TableCell>
                       <TableCell
-                        onClick={() => handleNavigate(task.id)}
                         className="font-medium cursor-pointer"
+                        onClick={() => jobModal.onOpen(task.id)}
                       >
                         <p className="break-all line-clamp-1">{task.title}</p>
                       </TableCell>
                       <TableCell
-                        onClick={() => handleNavigate(task.id)}
                         className="hidden md:table-cell cursor-pointer"
+                        onClick={() => jobModal.onOpen(task.id)}
                       >
                         <p className="break-all line-clamp-1">
                           {task.description}
                         </p>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">
+                      <TableCell
+                        className="hidden md:table-cell cursor-pointer"
+                        onClick={() => jobModal.onOpen(task.id)}
+                      >
                         {task.created_at
                           ? format(new Date(task.created_at), "dd/MM/yyyy")
                           : ""}
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">
+                      <TableCell
+                        className="hidden md:table-cell cursor-pointer"
+                        onClick={() => jobModal.onOpen(task.id)}
+                      >
                         <DueTime due_date={task.due_date} />
                       </TableCell>
+                      {/* Dialogs End */}
                       <TableCell>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
