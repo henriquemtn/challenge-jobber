@@ -34,9 +34,15 @@ import { format } from "date-fns";
 import DeleteTask from "./tasks/delete-task";
 import UpdateTask from "./tasks/edit-task";
 import DueTime from "./tasks/due-time";
+import { useRouter } from "next/navigation";
 
 export default function JobsTable() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const router = useRouter();
+
+  const handleNavigate = (id: number) => {
+    router.push(`/job/${id}`);
+  };
 
   useEffect(() => {
     async function fetchTasks() {
@@ -91,7 +97,10 @@ export default function JobsTable() {
                 <TableBody>
                   {tasks.map((task) => (
                     <TableRow key={task.id}>
-                      <TableCell className="hidden sm:table-cell">
+                      <TableCell
+                        onClick={() => handleNavigate(task.id)}
+                        className="hidden sm:table-cell  cursor-pointer"
+                      >
                         {task.image ? (
                           <Image
                             alt="Task image"
@@ -106,11 +115,19 @@ export default function JobsTable() {
                           </div>
                         )}
                       </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell
+                        onClick={() => handleNavigate(task.id)}
+                        className="font-medium cursor-pointer"
+                      >
                         <p className="break-all line-clamp-1">{task.title}</p>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                      <p className="break-all line-clamp-1">{task.description}</p>
+                      <TableCell
+                        onClick={() => handleNavigate(task.id)}
+                        className="hidden md:table-cell cursor-pointer"
+                      >
+                        <p className="break-all line-clamp-1">
+                          {task.description}
+                        </p>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
                         {task.created_at

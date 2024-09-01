@@ -4,19 +4,27 @@ import Image from "next/image";
 import React from "react";
 import { Card, CardContent } from "./ui/card";
 import { CarouselItem } from "./ui/carousel";
-import { Badge } from "./ui/badge";
+import { useRouter } from 'next/navigation'; 
 import { format } from "date-fns";
 import DueTime from "./tasks/due-time";
 
 export default function Job({
+  id,
   title,
   description,
   created_at,
   image,
   due_date,
 }: Task) {
+
+  const router = useRouter();
+
+  const handleNavigate = () => {
+    router.push(`/job/${id}`); // Navega para a URL desejada
+  };
+
   return (
-    <CarouselItem className="pl-1 min-[420px]:basis-1/2 md:basis-1/3 lg:basis-1/5 hover:cursor-pointer">
+    <CarouselItem onClick={handleNavigate} className="pl-1 min-[420px]:basis-1/2 md:basis-1/3 lg:basis-1/5 hover:cursor-pointer">
       <div className="p-0 md:p-1">
         <Card className="flex flex-col justify-between h-[345px]">
           {image ? (
