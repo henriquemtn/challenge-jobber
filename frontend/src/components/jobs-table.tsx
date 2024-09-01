@@ -4,15 +4,12 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent } from "./ui/tabs";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { File, FileImage, ListFilter, MoreHorizontal } from "lucide-react";
+import { FileImage, MoreHorizontal } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -38,8 +35,16 @@ import DeleteTask from "./tasks/delete-task";
 import UpdateTask from "./tasks/edit-task";
 import DueTime from "./tasks/due-time";
 
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import ViewTask from "./tasks/view-task";
+
 export default function JobsTable() {
   const [tasks, setTasks] = useState<Task[]>([]);
+
+  // funçao para limitar os caracteres de titulo e da descrição
+  const truncateText = (text: string, maxLength = 30) => {
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
 
   useEffect(() => {
     async function fetchTasks() {
@@ -85,9 +90,7 @@ export default function JobsTable() {
                     <TableHead className="hidden md:table-cell">
                       Lançamento
                     </TableHead>
-                    <TableHead className="table-cell" >
-                      Prazo
-                    </TableHead>
+                    <TableHead className="hidden sm:table-cell">Prazo</TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>
                     </TableHead>
@@ -95,56 +98,64 @@ export default function JobsTable() {
                 </TableHeader>
                 <TableBody>
                   {tasks.map((task) => (
-                    <TableRow key={task.id}>
-                      <TableCell className="hidden sm:table-cell">
-                        {task.image ? (
-                          <Image
-                            alt="Task image"
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src={task.image}
-                            width="64"
-                          />
-                        ) : (
-                          <div className="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center">
-                            <FileImage size={22} />
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {task.title}
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {task.description}
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {task.created_at
-                          ? format(new Date(task.created_at), "dd/MM/yyyy")
-                          : ""}
-                      </TableCell>
-                      <TableCell className="table-cell">
-                        <DueTime due_date={task.due_date} />
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <UpdateTask taskId={task.id} />
-                            <DeleteTask id={task.id} />
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+                    <Dialog key={task.id}>
+                      <DialogTrigger asChild>
+                        <TableRow className="cursor-pointer">
+                          {" "}
+                          <TableCell className="hidden sm:table-cell">
+                            {task.image ? (
+                              <Image
+                                alt="Task image"
+                                className="aspect-square rounded-md object-cover"
+                                height="64"
+                                src={task.image}
+                                width="64"
+                              />
+                            ) : (
+                              <div className="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center">
+                                <FileImage size={22} />
+                              </div>
+                            )}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {truncateText(task.title, 24)}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {truncateText(task.description, 24)}
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {task.created_at
+                              ? format(new Date(task.created_at), "dd/MM/yyyy")
+                              : ""}
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <DueTime due_date={task.due_date} />
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  aria-haspopup="true"
+                                  size="icon"
+                                  variant="ghost"
+                                >
+                                  <MoreHorizontal className="h-4 w-4" />
+                                  <span className="sr-only">Toggle menu</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <UpdateTask taskId={task.id} />
+                                <DeleteTask id={task.id} />
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <ViewTask />
+                      </DialogContent>
+                    </Dialog>
                   ))}
                 </TableBody>
               </Table>
