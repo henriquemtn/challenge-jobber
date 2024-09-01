@@ -5,7 +5,8 @@ import React from "react";
 import { Card, CardContent } from "./ui/card";
 import { CarouselItem } from "./ui/carousel";
 import { Badge } from "./ui/badge";
-import { format, differenceInDays } from "date-fns";
+import { format } from "date-fns";
+import DueTime from "./tasks/due-time";
 
 export default function Job({
   title,
@@ -14,27 +15,6 @@ export default function Job({
   image,
   due_date
 }: Task) {
-  const today = new Date();
-  const dueDate = due_date ? new Date(due_date) : null;
-  const daysRemaining = dueDate ? differenceInDays(dueDate, today) : null;
-
-  let badgeVariant: "default" | "destructive" | "secondary" | "outline" | null = 'default';
-  let badgeText = '';
-
-  if (daysRemaining !== null) {
-    if (daysRemaining <= 0) {
-      badgeVariant = 'destructive';
-      badgeText = 'Atrasado';
-    } else if (daysRemaining < 3) {
-      badgeVariant = 'destructive';
-      badgeText = `${daysRemaining} dias`;
-    } else {
-      badgeVariant = 'default';
-      badgeText = `${daysRemaining} dias`;
-    }
-  } else {
-    badgeText = 'Sem prazo';
-  }
 
   return (
     <CarouselItem className="pl-1 min-[420px]:basis-1/2 md:basis-1/3 lg:basis-1/5 hover:cursor-pointer">
@@ -73,9 +53,7 @@ export default function Job({
               </div>
               {due_date && (
                 <div className="flex gap-1 items-center">
-                  <Badge variant={badgeVariant}>
-                    {badgeText}
-                  </Badge>
+                  <DueTime due_date={due_date} />
                 </div>
               )}
             </div>

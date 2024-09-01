@@ -35,6 +35,8 @@ import { Task } from "@/types/types";
 import axios from "axios";
 import { format } from "date-fns";
 import DeleteTask from "./tasks/delete-task";
+import UpdateTask from "./tasks/edit-task";
+import DueTime from "./tasks/due-time";
 
 export default function JobsTable() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -83,7 +85,7 @@ export default function JobsTable() {
                     <TableHead className="hidden md:table-cell">
                       Lançamento
                     </TableHead>
-                    <TableHead className="hidden md:table-cell">
+                    <TableHead className="table-cell" >
                       Prazo
                     </TableHead>
                     <TableHead>
@@ -120,10 +122,8 @@ export default function JobsTable() {
                           ? format(new Date(task.created_at), "dd/MM/yyyy")
                           : ""}
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {task.due_date
-                          ? format(new Date(task.due_date), "dd/MM/yyyy")
-                          : ""}
+                      <TableCell className="table-cell">
+                        <DueTime due_date={task.due_date} />
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
@@ -139,7 +139,7 @@ export default function JobsTable() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Editar</DropdownMenuItem>
+                            <UpdateTask taskId={task.id} />
                             <DeleteTask id={task.id} />
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -151,8 +151,9 @@ export default function JobsTable() {
             </CardContent>
             <CardFooter>
               <div className="text-xs text-muted-foreground">
-                Showing <strong>{tasks.length}</strong> of{" "}
-                <strong>{tasks.length}</strong> products
+                Mostrando{" "}
+                <strong className="text-[#5F33E2]">{tasks.length}</strong> de{" "}
+                <strong>{tasks.length}</strong> Jobs
               </div>
             </CardFooter>
           </Card>
