@@ -6,9 +6,7 @@ import { Task } from "@/types/types";
 import Job from "./job";
 import {
   Carousel,
-  CarouselContent,
-  CarouselNext,
-  CarouselPrevious,
+  CarouselContent
 } from "./ui/carousel";
 import { Button } from "./ui/button";
 
