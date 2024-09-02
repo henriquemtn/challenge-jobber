@@ -4,9 +4,9 @@ import Image from "next/image";
 import React from "react";
 import { Card, CardContent } from "./ui/card";
 import { CarouselItem } from "./ui/carousel";
-import { useRouter } from 'next/navigation'; 
 import { format } from "date-fns";
 import DueTime from "./tasks/due-time";
+import useJobModal from "@/hooks/useJobModal";
 
 export default function Job({
   id,
@@ -17,14 +17,11 @@ export default function Job({
   due_date,
 }: Task) {
 
-  const router = useRouter();
+  const jobModal = useJobModal();
 
-  const handleNavigate = () => {
-    router.push(`/job/${id}`); // Navega para a URL desejada
-  };
 
   return (
-    <CarouselItem onClick={handleNavigate} className="pl-1 min-[420px]:basis-1/2 md:basis-1/3 lg:basis-1/5 hover:cursor-pointer">
+    <CarouselItem onClick={() => jobModal.onOpen(id)} className="pl-1 min-[420px]:basis-1/2 md:basis-1/3 lg:basis-1/5 hover:cursor-pointer">
       <div className="p-0 md:p-1">
         <Card className="flex flex-col justify-between h-[345px]">
           {image ? (
