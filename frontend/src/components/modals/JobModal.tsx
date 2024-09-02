@@ -37,13 +37,7 @@ export default function JobModal() {
   }, [jobModal.taskId]); // Reexecuta quando o ID da tarefa mudar
 
   if (!task) {
-    return (
-      <div className="flex flex-wrap gap-4">
-        <div className="flex flex-col items-center gap-2">
-          Houve um erro ao carregar esse Job..
-        </div>
-      </div>
-    );
+    return null
   }
 
   let bodyContent = (

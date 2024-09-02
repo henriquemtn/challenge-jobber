@@ -59,7 +59,16 @@ const FormSchema = z.object({
   status: z.string().optional(),
 });
 
-export default function AddTask() {
+type ButtonVariant = "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | "mobile";
+
+interface AddTask {
+  showIcon?: Boolean;
+  showLabel?: Boolean;
+  iconSize: number;
+  variant: ButtonVariant;
+}
+
+export default function AddTask({showIcon, showLabel, iconSize, variant}: AddTask) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -130,9 +139,9 @@ export default function AddTask() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="gap-1" variant="default">
-          <PlusCircle width={16} height={16} />
-          Adicionar um Job
+        <Button className="gap-1" variant={variant}>
+          {showIcon && <PlusCircle size={iconSize} />}
+          {showLabel && 'Adicionar um Job'}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
@@ -232,7 +241,7 @@ export default function AddTask() {
                 </FormItem>
               )}
             />
-            <div className="flex flex-col md:flex-row justify-between">
+            <div className="flex flex-col md:flex-row justify-between gap-4">
               <FormField
                 control={form.control}
                 name="priority"

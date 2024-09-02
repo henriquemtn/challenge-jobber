@@ -123,7 +123,7 @@ export default function JobsTable() {
           </DropdownMenu>
         </div>
         <div className="items-center gap-4 hidden md:flex">
-          <AddTask />
+          <AddTask showIcon={true} showLabel={true} iconSize={16} variant="default" />
         </div>
       </div>
       {/* Fim do Header */}
@@ -135,7 +135,7 @@ export default function JobsTable() {
             </TableHead>
             <TableHead>Título</TableHead>
             <TableHead className="hidden md:table-cell">Status</TableHead>
-            <TableHead className="hidden md:table-cell">Prazo</TableHead>
+            <TableHead className="table-cell">Prazo</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
