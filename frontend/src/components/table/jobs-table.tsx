@@ -65,8 +65,8 @@ export default function JobsTable() {
   }, [tasks, searchTerm, statusFilter, priorityFilter]);
 
   return (
-    <div className="w-full max-w-[1260px] mx-auto mt-4 mb-10 px-4 md:p-4 border rounded-md">
-      <div className="flex gap-2 items-center text-xl font-bold mb-4">
+    <div className="xl:max-w-[1260px] xl:mx-auto mx-4 mt-4 mb-10 px-4 md:p-4 border rounded-md">
+      <div className="flex gap-2 items-center text-xl font-bold my-4">
         <ListChecks size={16} />
         Jobs
       </div>
@@ -93,13 +93,13 @@ export default function JobsTable() {
                 onValueChange={setStatusFilter}
               >
                 <DropdownMenuRadioItem value="all">Todos</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="todo">
+                <DropdownMenuRadioItem value="Todo">
                   Pendente
                 </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="in progress">
+                <DropdownMenuRadioItem value="Em andamento">
                   Em andamento
                 </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="completed">
+                <DropdownMenuRadioItem value="Finalizado">
                   Finalizado
                 </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
@@ -111,7 +111,7 @@ export default function JobsTable() {
               >
                 <DropdownMenuRadioItem value="all">Todos</DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="low">Baixa</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="normal">
+                <DropdownMenuRadioItem value="Normal">
                   Média
                 </DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="high">Alta</DropdownMenuRadioItem>
@@ -170,10 +170,10 @@ export default function JobsTable() {
                   {task.status === "Todo" ? "Pendente" : task.status}
                 </Badge>
               </TableCell>
-              <TableCell>
+              <TableCell className="w-24">
                 <DueTime due_date={task.due_date} />
               </TableCell>
-              <TableCell>
+              <TableCell className="px-0">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button aria-haspopup="true" size="icon" variant="ghost">
