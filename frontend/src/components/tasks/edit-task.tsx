@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, parseISO } from "date-fns";
-import { CalendarIcon, PlusCircle } from "lucide-react";
+import { CalendarIcon, PlusCircle, SquarePen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios from "axios";
@@ -63,12 +63,16 @@ interface UpdateTaskProps {
   taskId: number;
   priority: string;
   status: string;
+  showIcon?: Boolean;
+  showLabel?: Boolean;
 }
 
 export default function UpdateTask({
   taskId,
   priority,
   status,
+  showIcon,
+  showLabel,
 }: UpdateTaskProps) {
   const [loading, setLoading] = useState(true);
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -161,10 +165,11 @@ export default function UpdateTask({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <p className="text-sm p-2 cursor-pointer hover:bg-slate-200 w-full text-left">
-          Editar
-        </p>
+      <DialogTrigger asChild className="flex gap-2 text-sm p-2 cursor-pointer w-full text-left">
+        <div className="w-auto p-2 text-sm hover:bg-slate-100 transition-all">
+          {showIcon && <SquarePen size={16} />}
+          {showLabel && "Editar"}
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
@@ -276,7 +281,8 @@ export default function UpdateTask({
                         onValueChange={field.onChange}
                       >
                         <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder={
+                          <SelectValue
+                            placeholder={
                               priority === "Normal"
                                 ? "Média"
                                 : priority === "low"

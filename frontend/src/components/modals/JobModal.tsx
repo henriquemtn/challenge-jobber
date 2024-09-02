@@ -11,6 +11,7 @@ import { FileImage } from "lucide-react";
 import UpdateTask from "../tasks/edit-task";
 import DeleteTask from "../tasks/delete-task";
 import DueTime from "../tasks/due-time";
+import { Badge } from "../ui/badge";
 
 export default function JobModal() {
   const router = useRouter();
@@ -47,10 +48,10 @@ export default function JobModal() {
 
   let bodyContent = (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col md:flex-row gap-4 p-4">
+      <div className="flex flex-col md:flex-row gap-4 p-4 md:p-0">
         <div className="flex flex-col">
           {task.image ? (
-            <div className="w-full max-w-[250px] h-[250px] overflow-hidden">
+            <div className="w-[250px] h-[250px] overflow-hidden">
               <Image
                 src={task.image}
                 alt="Imagem da tarefa"
@@ -60,7 +61,7 @@ export default function JobModal() {
               />
             </div>
           ) : (
-            <div className="max-h-[28rem] w-full max-w-md bg-gray-200 flex items-center justify-center rounded-t-md">
+            <div className="w-[250px] h-[250px] max-w-md bg-gray-200 flex items-center justify-center rounded-t-md">
               <FileImage size={32} />
             </div>
           )}
@@ -70,20 +71,53 @@ export default function JobModal() {
           className="pr-0 md:pl-4 w-full flex flex-col justify-between"
         >
           <div className="flex flex-col">
-            <h2 className="font-bold text-lg">Título: {task.title}</h2>
-            <p className="text-sm text-gray-500 mt-1">
-              Data de Criação:{" "}
+            <h2 className="text-xl text-black font-medium break-all mb-1">
+              {task.title}
+            </h2>
+            <div className="flex flex-row gap-2 mb-2">
+              <Badge
+                variant={
+                  task.priority === "Normal"
+                    ? "pendente"
+                    : task.priority === "low"
+                    ? "andamento"
+                    : task.priority === "high"
+                    ? "finalizado"
+                    : "default"
+                }
+              >
+                {task.priority === "Normal"
+                  ? "Média"
+                  : task.priority === "low"
+                  ? "Baixa"
+                  : task.priority === "high"
+                  ? "Alta"
+                  : "Não definido"}
+              </Badge>
+              <Badge
+                variant={
+                  task.status === "Todo"
+                    ? "pendente"
+                    : task.status === "Em andamento"
+                    ? "andamento"
+                    : task.status === "Finalizado"
+                    ? "finalizado"
+                    : "default"
+                }
+              >
+                {task.status === "Todo" ? "Pendente" : task.status}
+              </Badge>
+            </div>
+            <p className="text-sm text-gray-500 my-2">
+              Data de Lançamento:{" "}
               {task.created_at
                 ? new Date(task.created_at).toLocaleDateString()
                 : "N/A"}
             </p>
+
             <p className="text-sm text-gray-600 mt-2 min-h-[80px]">
               {task.description}
             </p>
-          </div>
-          <div className="flex flex-row justify-between">
-            <UpdateTask taskId={task.id} />
-            <DeleteTask id={task.id} />
           </div>
         </div>
       </div>
@@ -93,14 +127,19 @@ export default function JobModal() {
   let footerContent = (
     <div className="flex justify-between">
       <p className="text-sm text-[#5F33E2] font-medium mt-1">
-        Data de Vencimento:{" "}
+        Prazo de entrega:{" "}
         {task.due_date
           ? new Date(task.due_date).toLocaleDateString()
-          : "Nenhuma"}
+          : "Nenhum"}
       </p>
-      <div className="gap-2 flex">
-        <p>Entrega em:</p>
-        <DueTime due_date={task.due_date} />
+      <div className="flex flex-row justify-between w-14">
+        <UpdateTask
+          taskId={task.id}
+          priority={task.priority}
+          status={task.status}
+          showIcon={true}
+        />
+        <DeleteTask id={task.id} showIcon={true} showLabel={false} />
       </div>
     </div>
   );
