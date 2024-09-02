@@ -34,7 +34,11 @@ export default function DeleteTask({id}: DeleteTask) {
         );
         console.log("Task deleted successfully", response.data);
         toast.success("Tarefa deletada com sucesso!");
-        handleNavigate()
+        setTimeout(() => {
+          window.location.reload();
+          handleNavigate()
+        }, 1000);
+
 
       } catch (error) {
         toast.error("Houve um erro ao tentar deletar essa tarefa.");
