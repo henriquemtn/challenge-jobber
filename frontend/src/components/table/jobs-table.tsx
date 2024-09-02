@@ -183,7 +183,7 @@ export default function JobsTable() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Opções</DropdownMenuLabel>
-                    <UpdateTask taskId={task.id} />
+                    <UpdateTask taskId={task.id} priority={task.priority} status={task.status} />
                     <DeleteTask id={task.id} />
                   </DropdownMenuContent>
                 </DropdownMenu>
