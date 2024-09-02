@@ -1,62 +1,50 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Tabs, TabsContent } from "./ui/tabs";
+import { useState, useEffect, useMemo } from "react";
+import axios from "axios";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
-import {
-  Camera,
-  File,
-  FileImage,
-  ListFilter,
-  MoreHorizontal,
-} from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import {
   Table,
-  TableBody,
-  TableCell,
-  TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
-import Image from "next/image";
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import DefaultImage from "@/assets/not-found.png";
+import { Camera, FilterIcon, ListChecks, MoreHorizontal } from "lucide-react";
 import AddTask from "./tasks/add-task";
-import { Task } from "@/types/types";
-import axios from "axios";
-import { format } from "date-fns";
-import DeleteTask from "./tasks/delete-task";
-import UpdateTask from "./tasks/edit-task";
 import DueTime from "./tasks/due-time";
-import { useRouter } from "next/navigation";
+import { Task } from "@/types/types";
+import UpdateTask from "./tasks/edit-task";
+import DeleteTask from "./tasks/delete-task";
 import useJobModal from "@/hooks/useJobModal";
-import JobModal from "./modals/JobModal";
 
 export default function JobsTable() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
   const jobModal = useJobModal();
 
-  const handleNavigate = (id: number) => {
-    router.push(`/job/${id}`);
-  };
 
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const response = await axios.get("http://localhost:8000/api/tasks/");
+        const response = await axios.get<Task[]>(
+          "http://localhost:8000/api/tasks/"
+        );
         setTasks(response.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -66,129 +54,147 @@ export default function JobsTable() {
     fetchTasks();
   }, []);
 
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) => {
+      const nameMatch = task.title
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const statusMatch =
+        statusFilter === "all" || task.status === statusFilter;
+      const priorityMatch =
+        priorityFilter === "all" || task.priority === priorityFilter;
+      return nameMatch && statusMatch && priorityMatch;
+    });
+  }, [tasks, searchTerm, statusFilter, priorityFilter]);
+
   return (
-    <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:p-0 md:gap-8 max-w-[1260px] mx-auto my-4">
-      <Tabs defaultValue="all">
-        <TabsContent value="all">
-          <Card x-chunk="dashboard-06-chunk-0">
-            <CardHeader>
-              <div className="flex flex-col gap-4 md:flex-row justify-between">
-                <div className="flex-col w-3/4">
-                  <CardTitle>Jobs</CardTitle>
-                  <CardDescription className="pt-4 md:pt-2">
-                    Gerencie todos os seus Jobs em um só lugar, aqui você altera
-                    e remove jobs criados.
-                  </CardDescription>
-                </div>
-                <AddTask />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="items-center justify-center hidden sm:flex w-[100px]">
-                      <Camera size={16} />
-                    </TableHead>
-                    <TableHead>Titulo</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Descrição
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Lançamento
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Prazo
-                    </TableHead>
-                    <TableHead>
-                      <span className="sr-only">Actions</span>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {tasks.map((task) => (
-                    <TableRow key={task.id}>
-                      <TableCell
-                        className="hidden sm:table-cell  cursor-pointer"
-                        onClick={() => jobModal.onOpen(task.id)}
-                      >
-                        {task.image ? (
-                          <Image
-                            alt="Task image"
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src={task.image}
-                            width="64"
-                          />
-                        ) : (
-                          <div className="w-16 h-16 bg-gray-200 rounded-md flex items-center justify-center">
-                            <FileImage size={22} />
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell
-                        className="font-medium cursor-pointer"
-                        onClick={() => jobModal.onOpen(task.id)}
-                      >
-                        <p className="break-all line-clamp-1">{task.title}</p>
-                      </TableCell>
-                      <TableCell
-                        className="hidden md:table-cell cursor-pointer"
-                        onClick={() => jobModal.onOpen(task.id)}
-                      >
-                        <p className="break-all line-clamp-1">
-                          {task.description}
-                        </p>
-                      </TableCell>
-                      <TableCell
-                        className="hidden md:table-cell cursor-pointer"
-                        onClick={() => jobModal.onOpen(task.id)}
-                      >
-                        {task.created_at
-                          ? format(new Date(task.created_at), "dd/MM/yyyy")
-                          : ""}
-                      </TableCell>
-                      <TableCell
-                        className="hidden md:table-cell cursor-pointer"
-                        onClick={() => jobModal.onOpen(task.id)}
-                      >
-                        <DueTime due_date={task.due_date} />
-                      </TableCell>
-                      {/* Dialogs End */}
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Opções</DropdownMenuLabel>
-                            <UpdateTask taskId={task.id} />
-                            <DeleteTask id={task.id} />
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-            <CardFooter>
-              <div className="text-xs text-muted-foreground">
-                Mostrando{" "}
-                <strong className="text-[#5F33E2]">{tasks.length}</strong> de{" "}
-                <strong>{tasks.length}</strong> Jobs
-              </div>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </main>
+    <div className="xl:max-w-[1260px] xl:mx-auto mx-4 mt-4 mb-10 px-4 md:p-4 border rounded-md">
+      <div className="flex gap-2 items-center text-xl font-bold my-4">
+        <ListChecks size={16} />
+        Jobs
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex w-full items-center gap-4">
+          <Input
+            type="search"
+            placeholder="Pesquisar Jobs..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-[300px]"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                <FilterIcon className="mr-2 h-4 w-4" />
+                Filtros
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-[200px]">
+              <DropdownMenuLabel>Status</DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                value={statusFilter}
+                onValueChange={setStatusFilter}
+              >
+                <DropdownMenuRadioItem value="all">Todos</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="Todo">
+                  Pendente
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="Em andamento">
+                  Em andamento
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="Finalizado">
+                  Finalizado
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Prioridade</DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                value={priorityFilter}
+                onValueChange={setPriorityFilter}
+              >
+                <DropdownMenuRadioItem value="all">Todos</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="low">Baixa</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="Normal">
+                  Média
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="high">Alta</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="items-center gap-4 hidden md:flex">
+          <AddTask showIcon={true} showLabel={true} iconSize={16} variant="default" />
+        </div>
+      </div>
+      {/* Fim do Header */}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="pl-7 table-cell">
+              <Camera size={16} />
+            </TableHead>
+            <TableHead>Título</TableHead>
+            <TableHead className="hidden md:table-cell">Status</TableHead>
+            <TableHead className="table-cell">Prazo</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredTasks.map((task) => (
+            <TableRow key={task.id}>
+              <TableCell onClick={() => jobModal.onOpen(task.id)} className="cursor-pointer">
+                <img
+                  src={
+                    typeof task.image === "string"
+                      ? task.image
+                      : DefaultImage.src
+                  }
+                  alt={task.title}
+                  width={40}
+                  height={40}
+                  className="rounded-md"
+                  style={{ aspectRatio: "40/40", objectFit: "cover" }}
+                />
+              </TableCell>
+              <TableCell onClick={() => jobModal.onOpen(task.id)} className="font-medium overflow-hidden p-4 my-2 align-middle  cursor-pointer">
+                <p className="break-words line-clamp-2 w-20 sm:w-auto">{task.title}</p>
+              </TableCell>
+              <TableCell onClick={() => jobModal.onOpen(task.id)} className="hidden md:table-cell cursor-pointer">
+                <Badge
+                  variant={
+                    task.status === "Todo"
+                      ? "pendente"
+                      : task.status === "Em andamento"
+                      ? "andamento"
+                      : task.status === "Finalizado"
+                      ? "finalizado"
+                      : "default"
+                  }
+                >
+                  {task.status === "Todo" ? "Pendente" : task.status}
+                </Badge>
+              </TableCell>
+              <TableCell onClick={() => jobModal.onOpen(task.id)} className="w-24 cursor-pointer">
+                <DueTime due_date={task.due_date} />
+              </TableCell>
+              <TableCell className="px-0 text-end md:text-center">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button aria-haspopup="true" size="icon" variant="ghost">
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Toggle menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Opções</DropdownMenuLabel>
+                    <UpdateTask taskId={task.id} priority={task.priority} status={task.status} showLabel={true} />
+                    <DeleteTask id={task.id} showLabel={true} />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }

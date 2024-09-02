@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, parseISO } from "date-fns";
-import { CalendarIcon, PlusCircle } from "lucide-react";
+import { CalendarIcon, PlusCircle, SquarePen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import axios from "axios";
@@ -34,6 +34,13 @@ import {
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import toast from "react-hot-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 16;
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -48,13 +55,25 @@ const FormSchema = z.object({
   description: z.string().nonempty("Descrição é obrigatória"),
   due_date: z.date().optional(),
   image: z.any().optional(),
+  priority: z.string().optional(),
+  status: z.string().optional(),
 });
 
 interface UpdateTaskProps {
   taskId: number;
+  priority: string;
+  status: string;
+  showIcon?: Boolean;
+  showLabel?: Boolean;
 }
 
-export default function UpdateTask({ taskId }: UpdateTaskProps) {
+export default function UpdateTask({
+  taskId,
+  priority,
+  status,
+  showIcon,
+  showLabel,
+}: UpdateTaskProps) {
   const [loading, setLoading] = useState(true);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -96,6 +115,10 @@ export default function UpdateTask({ taskId }: UpdateTaskProps) {
       values.due_date ? format(values.due_date, "yyyy-MM-dd") : ""
     );
     formData.append("owner", "1");
+    // Adiciona o campo priority
+    formData.append("priority", values.priority ?? "Normal");
+    // Adiciona o campo status
+    formData.append("status", values.status ?? "Todo");
 
     if (values.image instanceof File) {
       if (values.image.size > MAX_FILE_SIZE) {
@@ -125,7 +148,6 @@ export default function UpdateTask({ taskId }: UpdateTaskProps) {
       setTimeout(() => {
         window.location.reload();
       }, 1500);
-      
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Axios error:", error.response?.data || error.message);
@@ -143,10 +165,11 @@ export default function UpdateTask({ taskId }: UpdateTaskProps) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <p className="text-sm p-2 cursor-pointer hover:bg-slate-200 w-full text-left">
-          Editar
-        </p>
+      <DialogTrigger asChild className="flex gap-2 text-sm p-2 cursor-pointer w-full text-left">
+        <div className="w-auto p-2 text-sm hover:bg-slate-100 transition-all">
+          {showIcon && <SquarePen size={16} />}
+          {showLabel && "Editar"}
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
@@ -245,6 +268,81 @@ export default function UpdateTask({ taskId }: UpdateTaskProps) {
                 </FormItem>
               )}
             />
+            <div className="flex flex-col md:flex-row justify-between">
+              <FormField
+                control={form.control}
+                name="priority"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Prioridade</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue
+                            placeholder={
+                              priority === "Normal"
+                                ? "Média"
+                                : priority === "low"
+                                ? "Baixa"
+                                : priority === "high"
+                                ? "Alta"
+                                : "Escolha a prioridade"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Normal">Média</SelectItem>
+                          <SelectItem value="low">Baixa</SelectItem>
+                          <SelectItem value="high">Alta</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue
+                            placeholder={
+                              status === "Todo"
+                                ? "Pendente"
+                                : status === "Em andamento"
+                                ? "Em andamento"
+                                : status === "Finalizado"
+                                ? "Finalizado"
+                                : "Escolha o status"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Todo">Pendente</SelectItem>
+                          <SelectItem value="Em andamento">
+                            Em andamento
+                          </SelectItem>
+                          <SelectItem value="Finalizado">Finalizado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <Button type="submit">Salvar</Button>
           </form>
         </Form>

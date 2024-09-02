@@ -12,39 +12,49 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { Trash2 } from "lucide-react";
 
 interface DeleteTask {
-    id: number
+  id: number;
+  showIcon?: Boolean;
+  showLabel?: Boolean;
 }
 
-export default function DeleteTask({id}: DeleteTask) {
+export default function DeleteTask({ id, showIcon, showLabel }: DeleteTask) {
   const router = useRouter();
 
   const handleNavigate = () => {
-    router.push('/');
+    router.push("/");
   };
 
   const handleDeleteTask = async () => {
     try {
-        const response = await axios.delete(
-          `http://localhost:8000/api/tasks/${id}/`,
-        );
-        console.log("Task deleted successfully", response.data);
-        toast.success("Tarefa deletada com sucesso!");
-        handleNavigate()
-
-      } catch (error) {
-        toast.error("Houve um erro ao tentar deletar essa tarefa.");
-        console.log(error)
-      }
+      const response = await axios.delete(
+        `http://localhost:8000/api/tasks/${id}/`
+      );
+      console.log("Task deleted successfully", response.data);
+      toast.success("Tarefa deletada com sucesso!");
+      setTimeout(() => {
+        window.location.reload();
+        handleNavigate();
+      }, 1000);
+    } catch (error) {
+      toast.error("Houve um erro ao tentar deletar essa tarefa.");
+      console.log(error);
+    }
   };
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="text-sm p-2 cursor-pointer hover:bg-slate-200 w-full text-left">Deletar task</AlertDialogTrigger>
+      <AlertDialogTrigger asChild className="flex gap-2 text-sm p-2 cursor-pointer w-full text-left">
+        <div className="w-auto p-2 text-sm hover:bg-slate-100 transition-all">
+          {showIcon && <Trash2 size={16} />}
+          {showLabel && "Deletar task"}
+        </div>
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -57,7 +67,10 @@ export default function DeleteTask({id}: DeleteTask) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDeleteTask} className="bg-red-500 hover:bg-red-600">
+          <AlertDialogAction
+            onClick={handleDeleteTask}
+            className="bg-red-500 hover:bg-red-600"
+          >
             Excluir
           </AlertDialogAction>
         </AlertDialogFooter>

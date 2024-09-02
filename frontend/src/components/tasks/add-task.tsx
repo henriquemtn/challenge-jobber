@@ -33,6 +33,13 @@ import {
 import { Textarea } from "../ui/textarea";
 import { Input } from "../ui/input";
 import toast from "react-hot-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const MAX_FILE_SIZE = 1024 * 1024 * 8;
 const ACCEPTED_IMAGE_MIME_TYPES = [
@@ -48,9 +55,20 @@ const FormSchema = z.object({
   description: z.string(),
   due_date: z.date().optional(),
   image: z.any().optional(),
+  priority: z.string().optional(),
+  status: z.string().optional(),
 });
 
-export default function AddTask() {
+type ButtonVariant = "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | "mobile";
+
+interface AddTask {
+  showIcon?: Boolean;
+  showLabel?: Boolean;
+  iconSize: number;
+  variant: ButtonVariant;
+}
+
+export default function AddTask({showIcon, showLabel, iconSize, variant}: AddTask) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -68,18 +86,22 @@ export default function AddTask() {
 
     // Adiciona o campo owner
     formData.append("owner", "1");
+    // Adiciona o campo priority
+    formData.append("priority", values.priority ?? "Normal");
+    // Adiciona o campo status
+    formData.append("status", values.status ?? "Todo");
 
     // Se o campo de imagem contiver um arquivo, adicione-o ao formData
     if (values.image instanceof File) {
       if (values.image.size > MAX_FILE_SIZE) {
-        toast('Tamanho máximo do arquivo deve ser de 8MB.', {
-          icon: '⚠️',
+        toast("Tamanho máximo do arquivo deve ser de 8MB.", {
+          icon: "⚠️",
         });
         return;
       }
       if (!ACCEPTED_IMAGE_MIME_TYPES.includes(values.image.type)) {
-        toast('Apenas .jpg, .jpeg, .png, and .webp são aceitos.', {
-          icon: '⚠️',
+        toast("Apenas .jpg, .jpeg, .png, and .webp são aceitos.", {
+          icon: "⚠️",
         });
         return;
       }
@@ -117,9 +139,9 @@ export default function AddTask() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="gap-1" variant="default">
-          <PlusCircle width={16} height={16}/>
-          Adicionar um Job
+        <Button className="gap-1" variant={variant}>
+          {showIcon && <PlusCircle size={iconSize} />}
+          {showLabel && 'Adicionar um Job'}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
@@ -127,7 +149,7 @@ export default function AddTask() {
           <DialogTitle>Adicionar um novo Job</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="title"
@@ -219,6 +241,54 @@ export default function AddTask() {
                 </FormItem>
               )}
             />
+            <div className="flex flex-col md:flex-row justify-between gap-4">
+              <FormField
+                control={form.control}
+                name="priority"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Prioridade</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Média" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Normal">Média</SelectItem>
+                          <SelectItem value="low">Baixa</SelectItem>
+                          <SelectItem value="high">Alta</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Pendente" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Todo">Pendente</SelectItem>
+                          <SelectItem value="Em andamento">
+                            Em andamento
+                          </SelectItem>
+                          <SelectItem value="Finalizado">Finalizado</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <Button type="submit">Enviar</Button>
           </form>
         </Form>
