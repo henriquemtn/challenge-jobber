@@ -58,11 +58,16 @@ Para facilitar o desenvolvimento e a configuração do ambiente, o projeto inclu
     cd challenge-jobber
     ```
 
+
 8. **Suba os containers com o Docker Compose:**
 
    ```bash
    docker-compose up --build
    ```
+
+   > **Atenção:**
+   > Caso o backend apresente erro do tipo `exec /scripts/commands.sh: no such file or directory`,
+   > verifique se o arquivo `backend/scripts/commands.sh` está com permissão de execução (chmod +x) e com final de linha LF (Unix). Se necessário, recrie o arquivo manualmente no VS Code, salve com final de linha LF e garanta a permissão de execução.
 
 9. **As aplicações vão estar nos seguintes URL's:**
 

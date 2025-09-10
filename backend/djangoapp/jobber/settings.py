@@ -1,8 +1,15 @@
+
+
+
 import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+from dotenv import load_dotenv
+load_dotenv(os.path.join(BASE_DIR.parent, 'dotenv_files', '.env'))
+
 DATA_DIR = BASE_DIR.parent / 'data' / 'web'
 
 # SECURITY WARNING: keep the secret key used in production secret!
